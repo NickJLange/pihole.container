@@ -1,0 +1,18 @@
+---
+
+pihole_user: "root"
+pihole_group: "root"
+
+pihole_system_prefix: "/usr/local"
+pihole_prefix: "{{ pihole_system_prefix }}/pihole"
+pihole_system_dnsmasq: "{{ pihole_prefix }}/dnsmasq.d/"
+pihole_conf_dir: "{{ pihole_prefix }}/etc/"
+# May not need
+pihole_system_conf_dir: "{{ pihole_system_prefix }}/etc/"
+pihole_env_file: "{{ pihole_prefix }}/envfile.conf"
+podman_path: "/usr/local/bin/podman"
+systemd_dir: /etc/systemd/system
+
+#podman run --name=pihole  --env-file=envfile -v {{pihole_conf_dir}}/:/etc/pihole/:z -v {{pihole_system_dnsmasq}}:/etc/dnsmasq.d/:z --network=host pihole/pihole:latest
+## Userspace someday with new podman
+##podman run --name=pi-hole --env-file=envfile -v ./etc-pihole/:/etc/pihole/:z -v ./etc-dnsmasq.d/:/etc/dnsmasq.d/:z -p ${PIFACE}:1053:53/tcp -p ${PIFACE}:1053:53/udp -p ${PIFACE}:1067:67/tcp -p ${PIFACE}:8001:80 -p ${PIFACE}:1080:80/tcp -p ${PIFACE}:8002:443/tcp -p ${PIFACE}:1443:443/tcp --cidfile %t/container-pihole.ctr-id --cgroups=no-conmon nickjlange/njl-pi-hole

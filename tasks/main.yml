@@ -1,0 +1,19 @@
+---
+
+- name: Check for Podman
+  stat:
+    path: "{{ podman_path }}"
+  register: podman_ok
+
+- fail:
+    msg: "Podman not installed - do that first"
+  when: podman_ok.stat.exists  != true 
+
+- import_tasks: install.yml
+
+  tags: [pihole_install_binary]
+
+
+
+#- import_tasks: configure_client_interface.yml
+#  tags: [wireguard_configure_client]

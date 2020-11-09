@@ -1,0 +1,16 @@
+[Unit]
+Description=Runs Pihole Server
+Documentation=https://pi-hole.net/
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User={{pihole_user}}
+Group={{pihole_group}}
+ExecStart={{podman_path}} start -a pihole 
+ExecReload={{podman_path}} stop -t 2 pihole
+KillSignal=SIGTERM
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

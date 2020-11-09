@@ -1,0 +1,97 @@
+---
+###############################################################################
+################################# INSTALL #####################################
+###############################################################################
+
+- stat:
+    path: "{{ pihole_prefix }}"
+  register: installed_ok
+  tags:
+    - pihole_systemd
+
+- block:
+  - name: create the data paths
+    file:
+      path: "{{ pihole_prefix }}/"
+      state: directory
+      mode: 0755
+      owner: "{{pihole_user}}"
+      group: "{{pihole_group}}"
+  - name: create the data paths
+    file:
+      path: "{{ pihole_system_dnsmasq }}"
+      state: directory
+      mode: 0755
+      owner: "{{pihole_user}}"
+      group: "{{pihole_group}}"
+  - name: create the data paths
+    file:
+      path: "{{ pihole_conf_dir }}"
+      state: directory
+      mode: 0755
+      owner: "{{pihole_user}}"
+      group: "{{pihole_group}}"
+  when: installed_ok.stat.exists != true
+
+
+###############################################################################
+################################ Initial Pull ####################################
+###############################################################################
+
+
+- name: Pull latest pihole image
+  shell: "{{podman_path}} pull pihole/pihole:latest"
+  args:
+    executable: /bin/bash
+  register: pull_ok
+- debug:
+   msg: "{{pull_ok}}"
+
+
+#--name=pihole  --env-file=envfile -v ./etc-pihole/:/etc/pihole/:z -v ./etc-dnsmasq.d/:/etc/dnsmasq.d/:z --network=host pihole/pihole:latest
+
+###############################################################################
+################################ CONFIGURE ####################################
+###############################################################################
+
+- block:
+
+  - name: Add envfile for pihhole
+    template:
+      src: pihole.envfile.j2
+      dest: "{{pihole_env_file}}"
+      mode: 0600
+      owner: "{{pihole_user}}"
+      group: "{{pihole_group}}"
+    notify: restart pihole
+
+  - name: Add default ad lists for gravity DB
+    template:
+      src: adlists.list
+      dest: "{{pihole_conf_dir}}/adlists.list"
+      mode: 0600
+      owner: "{{pihole_user}}"
+      group: "{{pihole_group}}"
+
+  - name: First run of image (no idea if I can )
+    shell: "{{podman_path}} run -d --replace=true --name=pihole  --env-file={{pihole_env_file}} -v {{pihole_conf_dir}}/:/etc/pihole/:z -v {{pihole_system_dnsmasq}}/:/etc/dnsmasq.d/:z --network=host  pihole/pihole:latest"
+    args:
+      executable: /bin/bash
+    register: pull_ok
+
+  - name: configure pihole for systemd
+    template:
+      src: pihole.service.j2
+      dest: "{{ systemd_dir }}/pihole.service"
+      mode: 0644
+    notify: reload systemd
+
+  - name: enable pihole
+    service:
+      name: pihole
+      enabled: yes
+      state: started
+
+  become: yes
+  become_user: "{{pihole_user}}"
+  tags: pihole_systemd

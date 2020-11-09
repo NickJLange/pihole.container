@@ -1,0 +1,12 @@
+---
+- name: restart pihole
+  become: yes
+  become_user: "{{pihole_user}}"
+  service:
+    name: pihole
+    state: restarted
+
+- name: reload systemd
+  become: yes
+  become_user: root
+  command: systemctl daemon-reload
