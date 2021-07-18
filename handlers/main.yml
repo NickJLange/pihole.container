@@ -10,3 +10,8 @@
   become: yes
   become_user: root
   command: systemctl daemon-reload
+
+- name: restart unbound
+  become: yes
+  become_user: root
+  command: systemctl restart unbound

@@ -1,12 +1,1 @@
-https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-https://mirror1.malwaredomains.com/files/justdomains
-https://blocklistproject.github.io/Lists/phishing.txt
-https://blocklistproject.github.io/Lists/porn.txt
-https://blocklistproject.github.io/Lists/ransomware.txt
-https://blocklistproject.github.io/Lists/malware.txt
-https://blocklistproject.github.io/Lists/abuse.txt
-https://blocklistproject.github.io/Lists/ads.txt
-https://blocklistproject.github.io/Lists/tracking.txt
-https://raw.githubusercontent.com/tiuxo/hosts/master/porn
-https://raw.githubusercontent.com/tiuxo/hosts/master/social
-https://raw.githubusercontent.com/tiuxo/hosts/master/ads
+../../../mkrasberry_config/pihole.container/defaults/adlists.list
