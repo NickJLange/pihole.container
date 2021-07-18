@@ -5,7 +5,7 @@ dependencies: []
 galaxy_info:
   author: Nick Lange
   company: Private
-  description: Configures Raspberry PI wifi
+  description: Configures Raspberry PI-hole DNS
   license: MIT
   min_ansible_version: 2.8
   platforms:

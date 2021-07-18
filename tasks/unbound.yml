@@ -1,0 +1,53 @@
+---
+###############################################################################
+################################# INSTALL #####################################
+###############################################################################
+
+- name: Install unbound  (likely present)
+  apt:
+    name:
+      - unbound
+    state: present
+    force_apt_get: yes
+    cache_valid_time: 84600
+  become: yes
+  become_user: root
+
+
+- name: create the unbound log dir
+  file:
+    path: /var/log/unbound/
+    state: directory
+    mode: 0755
+    owner: unbound
+    group: unbound
+
+
+# delete default installs- this is duplicated in the main template
+- name: Remove file (delete file)
+  file:
+    path: /etc/unbound/unbound.conf.d/root-auto-trust-anchor-file.conf
+    state: absent
+# delete default installs- this is duplicated in the main template
+- name: Remove file (delete file)
+  file:
+    path: /etc/unbound/unbound.conf.d/resolvconf_resolvers.conf
+    state: absent
+
+
+- name: Add config for unbound
+  template:
+    src: unbound.upstream.j2
+    dest: /etc/unbound/unbound.conf.d/upstream.conf
+    mode: 0600
+    owner: root
+    group: root
+
+- name: Add config for unbound
+  template:
+    src: unbound.pihole.j2
+    dest: /etc/unbound/unbound.conf.d/pihole.conf
+    mode: 0600
+    owner: root
+    group: root
+  notify: restart unbound

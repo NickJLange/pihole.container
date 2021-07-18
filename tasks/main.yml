@@ -7,13 +7,27 @@
 
 - fail:
     msg: "Podman not installed - do that first"
-  when: podman_ok.stat.exists  != true 
+  when: podman_ok.stat.exists  != true
+
+#- import_tasks: add_user.yml
+
+#  tags: [container_add_user]
 
 - import_tasks: install.yml
 
-  tags: [pihole_install_binary]
+  tags: [container_install_binary]
 
+- import_tasks: app_specific.yml
 
+  tags: [container_install_binary]
+
+- import_tasks: post_install.yml
+
+  tags: [container_install_binary]
+
+- import_tasks: unbound.yml
+
+  tags: [container_install_unbound]
 
 #- import_tasks: configure_client_interface.yml
 #  tags: [wireguard_configure_client]
