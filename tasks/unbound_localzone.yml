@@ -1,0 +1,16 @@
+---
+###############################################################################
+################################# INSTALL #####################################
+###############################################################################
+
+#FIXME - support for hypen subgroups
+
+- name: Update config for unbound
+  template:
+    src: unbound_localzone.j2
+    dest: /etc/unbound/unbound.conf.d/localzone-{{ dnsgroup.split("_")[0] + "." + dns_subdomain_base }}.conf
+    mode: 0600
+    owner: root
+    group: root
+  notify: restart unbound
+### FIXME: sudo systemctl disable unbound-resolvconf.service

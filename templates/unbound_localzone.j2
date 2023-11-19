@@ -1,0 +1,25 @@
+server:
+    ###########################################################################
+    # LOCAL ZONE
+    ###########################################################################
+
+
+    ### dnsgroup is a variable... FIXME
+    # Check me - this blocks wildcards that we use externally...
+    local-zone: "{{ dnsgroup + "." + dns_subdomain_base }}." typetransparent
+    {% set dns_a = dnsgroup.split("_")[0] | lower %}
+
+    {% for host in groups[dnsgroup] %}
+    {% set host_a = host.split(".")[0] | lower %}
+    {% set ip = hostvars[host]['ansible_ssh_host'] %}
+    {% set fqdn = host_a + "." + dns_a + "." + dns_subdomain_base + "." %}
+    
+    local-data: "{{fqdn}} 120 IN A {{ip}}"
+    local-data-ptr: "{{ ip  }} 120 {{fqdn}}"
+    {% endfor %}
+
+    {% if dns_cnames is defined and dns_cnames -%}
+    {% for cname, target in dns_cnames.items() -%}
+    # local-data: "{{ cname | lower}}.{{ dns_a }}.{{ dns_subdomain_base }}. CNAME {{ target | lower }}."
+    {% endfor %}
+    {% endif %}
