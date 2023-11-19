@@ -23,6 +23,8 @@
     group: unbound
 
 
+### FIXME: sudo systemctl disable .service
+
 # delete default installs- this is duplicated in the main template
 - name: Remove file (delete file)
   file:
@@ -50,4 +52,59 @@
     mode: 0600
     owner: root
     group: root
-  notify: restart unbound
+ # notify: restart unbound
+
+
+#After=network-online.target
+#Wants=network-online.target
+
+
+- name: Add correct unbound systemd profile 
+  template:
+    src: unbound.service.j2
+    dest: /lib/systemd/system/unbound.service
+    mode: 0644
+    owner: root
+    group: root
+#  notify: restart unbound
+
+
+- name: Start and enable unbound
+  service:
+    name:    unbound
+    enabled: yes
+    state:   started
+  register: unbound_service_result
+  failed_when: "unbound_service_result is failed and 'Could not find the requested service' not in unbound_service_result.msg"
+
+- name: Stop and disable resolvconf-service
+  service:
+    name:    unbound-resolvconf
+    enabled: no
+    force: true
+    masked: true
+  register: unbound_resolvconf_service_result
+  failed_when: "unbound_resolvconf_service_result is failed and 'Could not find the requested service' not in unbound_resolvconf_service_result.msg"
+
+- name: Stop and disable resolvconf-service
+  service:
+    name:    unbound-resolvconf
+    state: stopped
+    force: true
+  register: unbound_resolvconf_service_result
+  failed_when: "unbound_resolvconf_service_result is failed and 'Could not find the requested service' not in unbound_resolvconf_service_result.msg"
+
+- name: Just force systemd to reread configs (2.4 and above)
+  systemd:
+    daemon_reload: yes
+
+- name: Remove resolvconf droppings
+  file: 
+    path:  /etc/unbound/unbound.conf.d/resolvconf_resolvers.conf
+    state: absent
+
+- name: Ansible delete file glob
+  replace:
+    path: /etc/resolvconf.conf
+    regexp: '^unbound_conf=(.*)'
+    replace: '#unbound_conf=\1'

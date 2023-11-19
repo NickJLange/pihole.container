@@ -7,7 +7,8 @@ server:
  do-ip4: yes
  do-udp: yes
  do-tcp: yes
- access-control: 10.0.0.0/8 allow
+ access-control: 10.0.0.0/8 allow #FIXME
+# access-control: 192.168.0.0/16 allow
  access-control: {{pihole_dns1}}/32 allow
  access-control: {{pihole_dns2}}/32 allow
 
