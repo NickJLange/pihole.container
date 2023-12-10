@@ -1,9 +1,11 @@
 TZ={{Timezone}}
 WEBPASSWORD={{pihole_password}}
-DNS1={{pihole_dns1}}#5335
-DNS2={{pihole_dns2}}#5335
+PIHOLE_DNS_={{pihole_dns1}}#5335;{{pihole_dns2}}#5335
 DNSSEC=True
 HOSTNAME={{ inventory_hostname_short }}
 VIRTUAL_HOST={{ inventory_hostname_short }}
 PROXY_LOCATION=pi.hole
 MAXDBDAYS=180
+WEBTHEME="default-auto"
+DNSMASQ_LISTENING=local 
+WEB_PORT=1080

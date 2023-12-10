@@ -1,0 +1,44 @@
+---
+- name: "Warm up"
+  set_fact:
+    nft_path: "nftables"
+
+### make sure the directory is "present"
+- name: "Create nftables directory"
+  ansible.builtin.file:
+    path: "/etc/nftables.conf.d"
+    state: "directory"
+    mode: "0755"
+    owner: "root"
+    group: "root"
+
+- name: "Install nftables"
+  ansible.builtin.template:
+    src: "pihole.nftables.conf.j2"
+    dest: "/etc/nftables.conf.d/pihole.conf"
+    mode: "0644"
+    owner: "root"
+    group: "root"
+
+- name: "Enable nftables"
+  ansible.builtin.lineinfile:
+    path: "/etc/nftables.conf"
+    regexp: "^include.*pihole.conf.*"
+    line: 'include "/etc/nftables.conf.d/pihole.conf"'
+    state: "present"
+
+- name: Start and enable unbound
+  service:
+    name: nftables
+    enabled: yes
+    state: started
+  register: nftables_service_result
+  failed_when: "nftables_service_result is failed and 'Could not find the requested service' not in nftables_service_result.msg"
+
+- name: "Install Custom FTL Port"
+  ansible.builtin.template:
+    src: "02-pihole-port.conf.j2"
+    dest: "{{ container_prefix }}/etc/dnsmasq.d/02-port.conf"
+    owner: "{{ container_user }}"
+    group: "{{ container_group }}"
+    mode: 0644

@@ -3,18 +3,17 @@
 ################################# INSTALL #####################################
 ###############################################################################
 
-
 # - debug: var=preexisting
 
 ## FIXME drop privs
 ## FIXME export log path
-  - name: First run of image (no idea if I can )
-# -p 53:53/tcp -p 53:53/udp -p 67:67/udp -p 80:80/tcp -p 443:443/tcp
-#    shell: "{{podman_path}} run -d --replace=true --name=pihole  --cap-add CAP_NET_BIND_SERVICE  --ip {{ ansible_default_ipv4.address }} -p 53:53/tcp -p 53:53/udp -p 67:67/udp -p 80:80/tcp -p 443:443/tcp --restart=unless-stopped --env-file={{container_env_file}} -v {{container_conf_dir}}/:/etc/pihole/:z -v {{container_conf_dir}}/:/etc/dnsmasq.d/:z  pihole/pihole:latest"
-    shell: "{{podman_path}} run -d --replace=true --hostname `hostname`-pihole --net=host --name=pihole  --restart=unless-stopped --cap-add=CAP_AUDIT_WRITE --env-file={{container_env_file}} -v {{container_prefix}}/etc/:/etc/pihole/:z -v {{container_prefix}}/etc/dnsmasq.d:/etc/dnsmasq.d/:z  pihole/pihole:latest"
-    args:
-      executable: /bin/bash
-    register: pull_ok
-    become: yes
-    become_user: "{{container_user}}"
-    tags: pihole_systemd
+- name: First run of image (no idea if I can )
+  # -p 53:53/tcp -p 53:53/udp -p 67:67/udp -p 80:80/tcp -p 443:443/tcp
+  #    shell: "{{podman_path}} run -d --replace=true --name=pihole  --cap-add CAP_NET_BIND_SERVICE  --ip {{ ansible_default_ipv4.address }} -p 53:53/tcp -p 53:53/udp -p 67:67/udp -p 80:80/tcp -p 443:443/tcp --restart=unless-stopped --env-file={{container_env_file}} -v {{container_conf_dir}}/:/etc/pihole/:z -v {{container_conf_dir}}/:/etc/dnsmasq.d/:z  pihole/pihole:latest"
+  shell: "{{podman_path}} run -d --replace=true --hostname `hostname` --net=host --name=pihole  --restart=unless-stopped --cap-add=CAP_AUDIT_WRITE --env-file={{container_env_file}} -v {{container_prefix}}/etc/:/etc/pihole/:z -v {{container_prefix}}/etc/dnsmasq.d:/etc/dnsmasq.d/:z  pihole/pihole:latest"
+  args:
+    executable: /bin/bash
+  register: pull_ok
+  become: yes
+  become_user: "{{container_user}}"
+  tags: pihole_systemd

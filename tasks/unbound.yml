@@ -13,7 +13,6 @@
   become: yes
   become_user: root
 
-
 - name: create the unbound log dir
   file:
     path: /var/log/unbound/
@@ -21,7 +20,6 @@
     mode: 0755
     owner: unbound
     group: unbound
-
 
 ### FIXME: sudo systemctl disable .service
 
@@ -35,7 +33,6 @@
   file:
     path: /etc/unbound/unbound.conf.d/resolvconf_resolvers.conf
     state: absent
-
 
 - name: Add config for unbound
   template:
@@ -52,14 +49,12 @@
     mode: 0600
     owner: root
     group: root
- # notify: restart unbound
-
+  # notify: restart unbound
 
 #After=network-online.target
 #Wants=network-online.target
 
-
-- name: Add correct unbound systemd profile 
+- name: Add correct unbound systemd profile
   template:
     src: unbound.service.j2
     dest: /lib/systemd/system/unbound.service
@@ -68,18 +63,17 @@
     group: root
 #  notify: restart unbound
 
-
 - name: Start and enable unbound
   service:
-    name:    unbound
+    name: unbound
     enabled: yes
-    state:   started
+    state: started
   register: unbound_service_result
   failed_when: "unbound_service_result is failed and 'Could not find the requested service' not in unbound_service_result.msg"
 
 - name: Stop and disable resolvconf-service
   service:
-    name:    unbound-resolvconf
+    name: unbound-resolvconf
     enabled: no
     force: true
     masked: true
@@ -88,7 +82,7 @@
 
 - name: Stop and disable resolvconf-service
   service:
-    name:    unbound-resolvconf
+    name: unbound-resolvconf
     state: stopped
     force: true
   register: unbound_resolvconf_service_result
@@ -99,12 +93,13 @@
     daemon_reload: yes
 
 - name: Remove resolvconf droppings
-  file: 
-    path:  /etc/unbound/unbound.conf.d/resolvconf_resolvers.conf
+  file:
+    path: /etc/unbound/unbound.conf.d/resolvconf_resolvers.conf
     state: absent
 
 - name: Ansible delete file glob
   replace:
     path: /etc/resolvconf.conf
-    regexp: '^unbound_conf=(.*)'
+    regexp: "^unbound_conf=(.*)"
     replace: '#unbound_conf=\1'
+  ignore_errors: true
