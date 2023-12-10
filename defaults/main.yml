@@ -1,11 +1,8 @@
-
 ---
-
-
 Timezone: "America/New_York"
 
 # May not need
 
-
 pihole_system_dnsmasq: "{{ container_conf_dir }}/dnsmasq.d/"
 pihole_system_etc_pihole: "{{ container_conf_dir }}/pihole"
+pihole_listen_port: 1053

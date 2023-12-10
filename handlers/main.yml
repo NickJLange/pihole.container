@@ -15,3 +15,8 @@
   become: yes
   become_user: root
   command: systemctl restart unbound
+
+- name: restart nftables
+  become: yes
+  become_user: root
+  command: systemctl restart nftables
