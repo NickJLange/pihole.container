@@ -4,9 +4,9 @@ add table ip6 nat
 add chain ip6 nat PREROUTING {type nat hook prerouting priority dstnat; policy accept;}
 add rule ip nat PREROUTING tcp dport 53 counter redirect to :1053
 add rule ip nat PREROUTING udp dport 53 counter redirect to :1053
-add rule ip nat PREROUTING tcp dport 80 ip addr {{ inventory_hostname }}  counter redirect to :1080
-add rule ip nat PREROUTING tcp dport 443 ip addr {{ inventory_hostname }}  counter redirect to :1443
+add rule ip nat PREROUTING tcp dport 80 ip daddr {{ ansible_eth0["ipv4"].address }}  counter redirect to :1080
+add rule ip nat PREROUTING tcp dport 443 ip daddr {{ ansible_eth0["ipv4"].address }}  counter redirect to :1443
 add rule ip6 nat PREROUTING tcp dport 53 counter redirect to :1053
 add rule ip6 nat PREROUTING udp dport 53 counter redirect to :1053
-add rule ip6 nat PREROUTING tcp dport 80 {{ inventory_hostname }} counter redirect to :1080
-add rule ip6 nat PREROUTING tcp dport 443 ip6 daddr {{ inventory_hostname }} counter redirect to :1443
+add rule ip6 nat PREROUTING tcp dport 80 ip6 daddr {{ ansible_eth0["ipv6"][0].address }} counter redirect to :1080
+add rule ip6 nat PREROUTING tcp dport 443 ip6 daddr {{ ansible_eth0["ipv6"][0].address }} counter redirect to :1443

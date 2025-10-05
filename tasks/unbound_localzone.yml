@@ -5,6 +5,16 @@
 
 #FIXME - support for hypen subgroups
 
+- name: add manual override for unbound site
+  ansible.builtin.copy:
+    src: 30-unbound_override_wohand.com.conf
+    dest: /etc/unbound/unbound.conf.d/30-unbound_override_wohand.conf
+    mode: 0600
+    owner: root
+    group: root
+  when: 
+    dns_override is defined and dns_override == "wohand.com"
+
 - name: Update config for unbound
   template:
     src: unbound_localzone.j2
@@ -13,4 +23,5 @@
     owner: root
     group: root
   notify: restart unbound
+
 ### FIXME: sudo systemctl disable unbound-resolvconf.service

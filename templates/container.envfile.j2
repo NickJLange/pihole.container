@@ -1,11 +1,17 @@
 TZ={{Timezone}}
-WEBPASSWORD={{pihole_password}}
-PIHOLE_DNS_={{pihole_dns1}}#5335;{{pihole_dns2}}#5335
-DNSSEC=True
+FTLCONF_webserver_api_password={{pihole_password}}
+FTLCONF_dns_upstreams={{pihole_dns1}}#5335;{{pihole_dns2}}#5335
+FTLCONF_dns_port=1053
+FTLCONF_webserver_api_password={{pihole_password}}
+FTLCONF_dns_dnssec=True
 HOSTNAME={{ inventory_hostname_short }}
 VIRTUAL_HOST={{ inventory_hostname_short }}
 PROXY_LOCATION=pi.hole
 MAXDBDAYS=180
-WEBTHEME="default-auto"
-DNSMASQ_LISTENING=local 
-WEB_PORT=1080
+FTLCONF_webserver_interface_theme="default-auto"
+FTLCONF_webserver_port=1080
+FTLCONF_ntp_ipv4_active=False
+FTLCONF_ntp_ipv6_active=False
+#ZFTLCONF_misc_dnsmasq_lines: 'bind-interfaces;listen-address=192.168.0.25'
+#Z2FTLCONF_misc_dnsmasq_lines='port=1053'
+FTLCONF_misc_etc_dnsmasq_d=True
