@@ -1,16 +1,16 @@
 server:
- verbosity: 0
- logfile: "/var/log/unbound/unbound.log"
+  verbosity: 0
+  logfile: "/var/log/unbound/unbound.log"
 
- interface: {{ ansible_default_ipv4.address }}
- port: 5335
- do-ip4: yes
- do-udp: yes
- do-tcp: yes
- access-control: 10.0.0.0/8 allow #FIXME
-# access-control: 192.168.0.0/16 allow
- access-control: {{pihole_dns1}}/32 allow
- access-control: {{pihole_dns2}}/32 allow
+  interface: {{ ansible_default_ipv4.address }}
+  port: 5335
+  do-ip4: yes
+  do-udp: yes
+  do-tcp: yes
+  access-control: 10.0.0.0/8 allow
+  access-control: 192.168.0.0/16 allow
+  access-control: {{pihole_dns1}}/32 allow
+  access-control: {{pihole_dns2}}/32 allow
 
  # May be set to yes if you have IPv6 connectivity
  do-ip6: no
