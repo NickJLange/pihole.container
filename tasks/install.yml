@@ -3,11 +3,7 @@
 ################################ Initial Pull ####################################
 ###############################################################################
 
-
-
-
-
-- name: Add envfile for {{container}}
+- name: Add envfile for {{ image_name }}
   template:
     src: container.envfile.j2
     dest: "{{container_env_file}}"

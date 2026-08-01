@@ -1,0 +1,24 @@
+[Unit]
+Description=Pi-hole Container
+After=network-online.target
+
+[Container]
+Image={{ image_name }}
+ContainerName={{ container_friendly_name }}
+HostName={{ inventory_hostname_short }}
+EnvironmentFile={{ container_env_file }}
+Network=host
+AddCapability=CAP_AUDIT_WRITE
+HealthCmd=pihole status
+HealthInterval=30s
+HealthTimeout=10s
+HealthStartPeriod=120s
+Volume={{ container_prefix }}/etc/:/etc/pihole/:z
+Volume={{ container_prefix }}/etc/dnsmasq.d:/etc/dnsmasq.d/:z
+AutoUpdate=registry
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=default.target
