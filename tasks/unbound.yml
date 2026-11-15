@@ -97,9 +97,14 @@
     path: /etc/unbound/unbound.conf.d/resolvconf_resolvers.conf
     state: absent
 
-- name: Ansible delete file glob
+- name: Check for resolvconf config (removed as of Trixie)
+  stat:
+    path: /etc/resolvconf.conf
+  register: resolvconf_conf
+
+- name: Disable unbound_conf in resolvconf config
   replace:
     path: /etc/resolvconf.conf
     regexp: "^unbound_conf=(.*)"
     replace: '#unbound_conf=\1'
-  ignore_errors: true
+  when: resolvconf_conf.stat.exists
