@@ -28,6 +28,7 @@
       - container_prefix is defined
       - image_name is defined
       - container_home_url is defined
+      - quadlet_path is defined
 
 - import_tasks: install.yml
   tags: [service_install_binary]
